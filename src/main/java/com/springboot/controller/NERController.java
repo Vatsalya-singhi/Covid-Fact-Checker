@@ -31,8 +31,8 @@ public class NERController {
 	private StanfordCoreNLP stanfordCoreNLP;
 
 	@GetMapping("/welcome")
-	public JSONObject welcome() {
-		String text = "The President does not support him";
+	public JSONObject welcome(@RequestParam final String text) {
+//		String text = "The President does not support him";
 		JSONObject json = new JSONObject();
 
 		json.put("pos", POSTagger(text));
@@ -40,7 +40,7 @@ public class NERController {
 		json.put("lemma", LemmaAnalysis(text));
 		json.put("ner", NERAnalysis(text));
 		json.put("factchecker", factChecker(text));
-		
+
 		return json;
 	}
 
@@ -136,7 +136,7 @@ public class NERController {
 	// 5 Fact Checker
 	public JSONObject factChecker(final String text) {
 		JSONObject json = new JSONObject();
-		
+
 		try {
 			File test = new File("model" + File.separator + "en-covid-classifier-NGRAM.bin");
 			String classificationModelFilePath = test.getAbsolutePath();
@@ -155,7 +155,7 @@ public class NERController {
 			e.printStackTrace();
 			json.put("prediction", "Unable to verify validity.");
 		}
-		
+
 		return json;
 	}
 
