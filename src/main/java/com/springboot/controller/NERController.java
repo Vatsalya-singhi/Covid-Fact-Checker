@@ -1,5 +1,7 @@
 package com.springboot.controller;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -19,6 +21,8 @@ import edu.stanford.nlp.ling.CoreLabel;
 import edu.stanford.nlp.pipeline.CoreDocument;
 import edu.stanford.nlp.pipeline.CoreSentence;
 import edu.stanford.nlp.pipeline.StanfordCoreNLP;
+import opennlp.tools.doccat.DoccatModel;
+import opennlp.tools.doccat.DocumentCategorizerME;
 
 @RestController
 public class NERController {
@@ -35,7 +39,8 @@ public class NERController {
 		json.put("sentiment", SentimentAnalysis(text));
 		json.put("lemma", LemmaAnalysis(text));
 		json.put("ner", NERAnalysis(text));
-
+		json.put("factchecker", factChecker(text));
+		
 		return json;
 	}
 
@@ -125,6 +130,32 @@ public class NERController {
 			json.put(coreLabel.originalText(), nerString);
 		}
 
+		return json;
+	}
+
+	// 5 Fact Checker
+	public JSONObject factChecker(final String text) {
+		JSONObject json = new JSONObject();
+		
+		try {
+			File test = new File("model" + File.separator + "en-covid-classifier-NGRAM.bin");
+			String classificationModelFilePath = test.getAbsolutePath();
+			DocumentCategorizerME classificationME = new DocumentCategorizerME(
+					new DoccatModel(new FileInputStream(classificationModelFilePath)));
+			String documentContent = "The new CORONA VIRUS may not show signs of infection for many days";
+
+			double[] classDistribution = classificationME.categorize(documentContent.split(" "));
+
+			String predictedCategory = classificationME.getBestCategory(classDistribution);
+			System.out.println("Model prediction : " + predictedCategory);
+			json.put("prediction", predictedCategory);
+		} catch (Exception e) {
+			// TODO: handle exception
+			System.out.println("An exception in reading the training file. Please check.");
+			e.printStackTrace();
+			json.put("prediction", "Unable to verify validity.");
+		}
+		
 		return json;
 	}
 
