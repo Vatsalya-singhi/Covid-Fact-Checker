@@ -12,5 +12,5 @@ public class SpringbootTaadsAppApplication {
 		SpringApplication.run(SpringbootTaadsAppApplication.class, args);
 		System.out.println("Server Started");
 	}
-	
+
 }
