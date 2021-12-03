@@ -6,6 +6,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -24,16 +25,17 @@ import edu.stanford.nlp.pipeline.StanfordCoreNLP;
 import opennlp.tools.doccat.DoccatModel;
 import opennlp.tools.doccat.DocumentCategorizerME;
 
+@CrossOrigin(origins = "*", allowedHeaders = "*")
 @RestController
 public class NERController {
 
 	@Autowired
 	private StanfordCoreNLP stanfordCoreNLP;
 
-	@GetMapping("/check")
-	public String checker(@RequestParam final String text) {
-		return "Welcome Checker works";
-	}
+//	@GetMapping("/check")
+//	public String checker(@RequestParam final String text) {
+//		return "Welcome Checker works";
+//	}
 	
 	@GetMapping("/welcome")
 	public JSONObject welcome(@RequestParam final String text) {
