@@ -30,6 +30,11 @@ public class NERController {
 	@Autowired
 	private StanfordCoreNLP stanfordCoreNLP;
 
+	@GetMapping("/check")
+	public String checker(@RequestParam final String text) {
+		return "Welcome Checker works";
+	}
+	
 	@GetMapping("/welcome")
 	public JSONObject welcome(@RequestParam final String text) {
 //		String text = "The President does not support him";
