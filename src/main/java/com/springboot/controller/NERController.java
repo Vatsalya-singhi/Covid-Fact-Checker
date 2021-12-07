@@ -145,17 +145,27 @@ public class NERController {
 		JSONObject json = new JSONObject();
 
 		try {
-			File test = new File("model" + File.separator + "en-covid-classifier-NGRAM.bin");
+//			File test = new File("model" + File.separator + "en-covid-classifier-NGRAM-old.bin");
+			File test = new File("model" + File.separator + "en-covid-classifier-maxent.bin");
 			String classificationModelFilePath = test.getAbsolutePath();
 			DocumentCategorizerME classificationME = new DocumentCategorizerME(
 					new DoccatModel(new FileInputStream(classificationModelFilePath)));
-			String documentContent = "The new CORONA VIRUS may not show signs of infection for many days";
+			
+			String documentContent = text; //"The new CORONA VIRUS may not show signs of infection for many days";
 
-			double[] classDistribution = classificationME.categorize(documentContent.split(" "));
+			String[] docWords = documentContent.replaceAll("[^A-Za-z]", " ").split(" ");
+			
+//			double[] classDistribution = classificationME.categorize(documentContent.split(" "));
+			double[] classDistribution = classificationME.categorize(docWords);
 
+			for(int i=0;i<classificationME.getNumberOfCategories();i++){
+//                System.out.println(classificationME.getCategory(i)+" : "+ classDistribution[i]);
+                json.put(classificationME.getCategory(i), classDistribution[i]);
+            }
+			
 			String predictedCategory = classificationME.getBestCategory(classDistribution);
-			System.out.println("Model prediction : " + predictedCategory);
-			json.put("prediction", predictedCategory);
+			System.out.println("Best prediction : " + predictedCategory);
+			json.put("output", predictedCategory);
 		} catch (Exception e) {
 			// TODO: handle exception
 			System.out.println("An exception in reading the training file. Please check.");
